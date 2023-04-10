@@ -1,18 +1,19 @@
-import { Post } from '@/interfaces/post.interface'
-import { GetServerSideProps } from 'next'
+import { PostInterface } from '@/interfaces/post.interface'
+import { GetServerSideProps } from 'next/types'
 import React from 'react'
-import { useRouter } from 'next/router'
+import Post from '@/components/Post'
+import styles from '@/styles/Posts.module.css'
 
-const Posts = ({posts}:any) => {
-  const router = useRouter();
-  
+const Posts = (props:{posts:PostInterface[]}) => {
+
+  const {posts}=props;
+
   return (
-    <>{posts.map((post:Post) =>{
+    <>{posts.map((post:PostInterface) =>{
      
-     return <>
-      <p>{post.title}</p>
-      <p>{post.text}</p>
-      </>
+     return <div className={styles.container}>
+     <Post post={post}/>
+      </div>
     })}</>
   )
 }
@@ -27,7 +28,7 @@ export const getServerSideProps:GetServerSideProps  =async (context)=>{
 
   const data = await fetch(`${process.env.SERVER_URL}posts`);
 
-  const posts:Post[] = await data.json();
+  const posts:PostInterface[] = await data.json();
 
   return {
     props: {
